@@ -1,0 +1,59 @@
+name: WRAP Weekly Reports
+
+on:
+  schedule:
+    # Monday 9 AM EDT (UTC-4) = 13:00 UTC — change to 14:00 in winter (EST)
+    - cron: '0 13 * * 1'
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type SEND to confirm (emails go to all WRAP staff)'
+        required: true
+        default: ''
+
+jobs:
+  registrations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install psycopg2-binary msal requests
+      - name: Send registrations report
+        if: github.event_name == 'schedule' || github.event.inputs.confirm == 'SEND'
+        env:
+          AZURE_TENANT_ID:    ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID:    ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          DB_HOST:            ${{ secrets.DB_HOST }}
+          DB_DATABASE:        ${{ secrets.DB_DATABASE }}
+          DB_USERNAME:        ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD:        ${{ secrets.DB_PASSWORD }}
+          DB_PORT:            ${{ secrets.DB_PORT }}
+          MAIL_SENDER:        ${{ secrets.MAIL_SENDER }}
+          MAIL_ALL_STAFF:     ${{ secrets.MAIL_ALL_STAFF }}
+        run: python send_registrations_report.py
+
+  certifications:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install psycopg2-binary msal requests
+      - name: Send certifications report
+        if: github.event_name == 'schedule' || github.event.inputs.confirm == 'SEND'
+        env:
+          AZURE_TENANT_ID:    ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID:    ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          DB_HOST:            ${{ secrets.DB_HOST }}
+          DB_DATABASE:        ${{ secrets.DB_DATABASE }}
+          DB_USERNAME:        ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD:        ${{ secrets.DB_PASSWORD }}
+          DB_PORT:            ${{ secrets.DB_PORT }}
+          MAIL_SENDER:        ${{ secrets.MAIL_SENDER }}
+          MAIL_ALL_STAFF:     ${{ secrets.MAIL_ALL_STAFF }}
+        run: python send_certifications_report.py
