@@ -3,7 +3,7 @@ name: WRAP Weekly Reports
 on:
   schedule:
     # Monday 9 AM EDT (UTC-4) = 13:00 UTC — change to 14:00 in winter (EST)
-    - cron: '0 11 * * 1'
+    - cron: '* * * * *'
   workflow_dispatch:
     inputs:
       confirm:
