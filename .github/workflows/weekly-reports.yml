@@ -1,15 +1,12 @@
 name: WRAP Weekly Reports
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       confirm:
         description: 'Type SEND to confirm (emails go to all WRAP staff)'
         required: true
         default: ''
-
 jobs:
   registrations:
     runs-on: ubuntu-latest
